@@ -1,0 +1,5 @@
+cc_library(
+    name = "third_party",
+    deps = ["//deps/lua", "//deps/hdr_histogram", "//deps/hiredis"],
+    visibility = ["//visibility:public"],
+)

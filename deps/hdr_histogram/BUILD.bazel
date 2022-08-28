@@ -1,0 +1,8 @@
+cc_library(
+    name = "hdr_histogram",
+    srcs = ["hdr_histogram.c"],
+    hdrs = ["hdr_atomic.h", "hdr_histogram.h", "hdr_redis_malloc.h", "hdr_tests.h"],
+    includes = ["."],
+    defines = ["HDR_MALLOC_INCLUDE=<hdr_redis_malloc.h>"],
+    visibility = ["//visibility:public"],
+)

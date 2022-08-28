@@ -1,0 +1,167 @@
+cc_library(
+    name = "hdrs",
+    hdrs = glob(["**/*.h"]),
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "redis",
+    srcs = ["ae.c"],
+    textual_hdrs = [
+        "ae_epoll.c",
+        "ae_evport.c",
+        "ae_kqueue.c",
+        "ae_select.c",
+    ],
+    deps = [":hdrs",":monotonic", ":anet", ":redisassert"],
+)
+
+cc_library(
+    name = "monotonic",
+    srcs = ["monotonic.c"],
+    deps = [ ":hdrs"],
+)
+
+cc_library(
+    name = "anet",
+    srcs = ["anet.c"],
+    hdrs = ["anet.h"],
+    deps = [":hdrs", ":config"],
+)
+
+cc_library(
+    name = "redisassert",
+    srcs = ["redisassert.c"],
+    deps = [":hdrs"],
+)
+
+cc_library(
+    name = "config",
+    srcs = ["config.c"],
+    deps = [":hdrs",  "//deps:third_party"],
+)
+
+cc_library(
+    name = "server",
+    srcs = ["server.c"],
+    deps = [":hdrs",":rio", ":config", "//deps:third_party"],
+)
+
+cc_library(
+    name = "rio",
+    srcs = ["rio.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+cc_library(
+    name = "aof",
+    srcs = ["aof.c"],
+    deps = [":server"],
+)
+
+cc_library(
+    name = "bio",
+    srcs = ["bio.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+cc_library(
+    name = "bitops",
+    srcs = ["bitops.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+cc_library(
+    name = "blocked",
+    srcs = ["blocked.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "call_reply",
+    srcs = ["call_reply.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+cc_library(
+    name = "child_info",
+    srcs = ["childinfo.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "cli_common",
+    srcs = ["cli_common.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+cc_library(
+    name = "cluster",
+    srcs = ["cluster.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "commands",
+    srcs = ["commands.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "connection",
+    srcs = ["connection.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "crc",
+    srcs = ["crc16.c", "crc64.c", "crcspeed.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "db",
+    srcs = ["db.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "debug",
+    srcs = ["debug.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "defrag",
+    srcs = ["defrag.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "dict",
+    srcs = ["dict.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "endiancov",
+    srcs = ["endianconv.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)
+
+
+cc_library(
+    name = "endiancov",
+    srcs = ["endianconv.c"],
+    deps = [":hdrs", "//deps:third_party"],
+)

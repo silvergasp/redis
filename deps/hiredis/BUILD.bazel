@@ -1,0 +1,9 @@
+# TODO: Add option to enable Openssl, currently disabled.
+cc_library(
+    name = "hiredis",
+    srcs = glob(["*.c"], exclude = ["ssl.c", "dict.c"]),
+    textual_hdrs = ["dict.c"],
+    hdrs = glob(["*.h"]),
+    includes = ["."],
+    visibility = ["//visibility:public"],
+)
