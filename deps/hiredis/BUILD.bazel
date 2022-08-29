@@ -1,9 +1,21 @@
-# TODO: Add option to enable Openssl, currently disabled.
 cc_library(
     name = "hiredis",
-    srcs = glob(["*.c"], exclude = ["ssl.c", "dict.c"]),
-    textual_hdrs = ["dict.c"],
+    srcs = [
+        "alloc.c",
+        "async.c",
+        "hiredis.c",
+        "net.c",
+        "read.c",
+        "sds.c",
+        "sockcompat.c",
+    ] + select({
+        "//:ssl_enabled": ["ssl.c"],
+    }),
     hdrs = glob(["*.h"]),
     includes = ["."],
+    textual_hdrs = ["dict.c"],
     visibility = ["//visibility:public"],
+    deps = select({
+        "//:ssl_enabled": ["@openssl//:openssl"],
+    }),
 )

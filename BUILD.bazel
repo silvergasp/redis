@@ -1,0 +1,19 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+load("@io_bazel_rules_docker//cc:image.bzl", "cc_image")
+
+bool_flag(
+    name = "build_tls",
+    build_setting_default = True,
+)
+
+config_setting(
+    name = "ssl_enabled",
+    flag_values = {
+        ":build_tls": "True",
+    },
+)
+
+cc_image(
+    name = "redis_image",
+    binary = "//src:redis-server",
+)

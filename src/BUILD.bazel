@@ -1,167 +1,222 @@
+TEXTUAL_HDRS = [
+    "ae_epoll.c",
+    "ae_evport.c",
+    "ae_kqueue.c",
+    "ae_select.c",
+]
+
+SRCS = [
+    "acl.c",
+    "adlist.c",
+    "ae.c",
+    "anet.c",
+    "aof.c",
+    "bio.c",
+    "bitops.c",
+    "blocked.c",
+    "call_reply.c",
+    "childinfo.c",
+    "cluster.c",
+    "commands.c",
+    "config.c",
+    "connection.c",
+    "crc16.c",
+    "crc64.c",
+    "crcspeed.c",
+    "db.c",
+    "debug.c",
+    "defrag.c",
+    "dict.c",
+    "endianconv.c",
+    "eval.c",
+    "evict.c",
+    "expire.c",
+    "function_lua.c",
+    "functions.c",
+    "geo.c",
+    "geohash.c",
+    "geohash_helper.c",
+    "hyperloglog.c",
+    "intset.c",
+    "latency.c",
+    "lazyfree.c",
+    "listpack.c",
+    "localtime.c",
+    "lolwut.c",
+    "lolwut5.c",
+    "lolwut6.c",
+    "lzf_c.c",
+    "lzf_d.c",
+    "memtest.c",
+    "module.c",
+    "monotonic.c",
+    "mt19937-64.c",
+    "multi.c",
+    "networking.c",
+    "notify.c",
+    "object.c",
+    "pqsort.c",
+    "pubsub.c",
+    "quicklist.c",
+    "rand.c",
+    "rax.c",
+    "rdb.c",
+    "redis-check-aof.c",
+    "redis-check-rdb.c",
+    "release.c",
+    "replication.c",
+    "resp_parser.c",
+    "rio.c",
+    "script.c",
+    "script_lua.c",
+    "sds.c",
+    "sentinel.c",
+    "server.c",
+    "setcpuaffinity.c",
+    "setproctitle.c",
+    "sha1.c",
+    "sha256.c",
+    "siphash.c",
+    "slowlog.c",
+    "socket.c",
+    "sort.c",
+    "sparkline.c",
+    "strl.c",
+    "syncio.c",
+    "syscheck.c",
+    "t_hash.c",
+    "t_list.c",
+    "t_set.c",
+    "t_stream.c",
+    "t_string.c",
+    "t_zset.c",
+    "timeout.c",
+    "tls.c",
+    "tracking.c",
+    "unix.c",
+    "util.c",
+    "ziplist.c",
+    "zipmap.c",
+    "zmalloc.c",
+]
+
+HDRS = [
+    "adlist.h",
+    "ae.h",
+    "anet.h",
+    "asciilogo.h",
+    "atomicvar.h",
+    "bio.h",
+    "call_reply.h",
+    "cli_common.h",
+    "cluster.h",
+    "config.h",
+    "connection.h",
+    "connhelpers.h",
+    "crc16_slottable.h",
+    "crc64.h",
+    "crcspeed.h",
+    "debugmacro.h",
+    "dict.h",
+    "endianconv.h",
+    "fmacros.h",
+    "functions.h",
+    "geo.h",
+    "geohash.h",
+    "geohash_helper.h",
+    "help.h",
+    "intset.h",
+    "latency.h",
+    "listpack.h",
+    "listpack_malloc.h",
+    "lolwut.h",
+    "lzf.h",
+    "lzfP.h",
+    "monotonic.h",
+    "mt19937-64.h",
+    "pqsort.h",
+    "quicklist.h",
+    "rand.h",
+    "rax.h",
+    "rax_malloc.h",
+    "rdb.h",
+    "redisassert.h",
+    "redismodule.h",
+    "release.h",
+    "resp_parser.h",
+    "rio.h",
+    "script.h",
+    "script_lua.h",
+    "sds.h",
+    "sdsalloc.h",
+    "server.h",
+    "sha1.h",
+    "sha256.h",
+    "slowlog.h",
+    "solarisfixes.h",
+    "sparkline.h",
+    "stream.h",
+    "syscheck.h",
+    "testhelp.h",
+    "util.h",
+    "version.h",
+    "ziplist.h",
+    "zipmap.h",
+    "zmalloc.h",
+]
+
+DEFINES = [
+    "BUILD_TLS_MODULE=0",
+] + select({
+    "//:ssl_enabled": ["USE_OPENSSL"],
+    "//conditions:default": [],
+})
+
+cc_binary(
+    name = "redis-server",
+    srcs = SRCS,
+    copts = ["-pthread"],
+    defines = DEFINES,
+    linkopts = [
+        "-pthread",
+        "-ldl",
+    ],
+    deps = [
+        ":hdrs",
+        "//deps:third_party",
+    ],
+)
+
+cc_test(
+    name = "redis-server-test",
+    srcs = SRCS,
+    args = [
+        "test",
+        "all",
+    ],
+    copts = ["-pthread"],
+    defines = DEFINES + ["REDIS_TEST"],
+    linkopts = [
+        "-pthread",
+        "-ldl",
+    ],
+    deps = [
+        "//deps:third_party",
+    ],
+)
+
 cc_library(
-    name = "hdrs",
-    hdrs = glob(["**/*.h"]),
+    name = "test_hdrs",
+    hdrs = HDRS,
+    defines = DEFINES + ["REDIS_TEST"],
+    textual_hdrs = TEXTUAL_HDRS,
     visibility = ["//visibility:public"],
 )
 
 cc_library(
-    name = "redis",
-    srcs = ["ae.c"],
-    textual_hdrs = [
-        "ae_epoll.c",
-        "ae_evport.c",
-        "ae_kqueue.c",
-        "ae_select.c",
-    ],
-    deps = [":hdrs",":monotonic", ":anet", ":redisassert"],
-)
-
-cc_library(
-    name = "monotonic",
-    srcs = ["monotonic.c"],
-    deps = [ ":hdrs"],
-)
-
-cc_library(
-    name = "anet",
-    srcs = ["anet.c"],
-    hdrs = ["anet.h"],
-    deps = [":hdrs", ":config"],
-)
-
-cc_library(
-    name = "redisassert",
-    srcs = ["redisassert.c"],
-    deps = [":hdrs"],
-)
-
-cc_library(
-    name = "config",
-    srcs = ["config.c"],
-    deps = [":hdrs",  "//deps:third_party"],
-)
-
-cc_library(
-    name = "server",
-    srcs = ["server.c"],
-    deps = [":hdrs",":rio", ":config", "//deps:third_party"],
-)
-
-cc_library(
-    name = "rio",
-    srcs = ["rio.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-cc_library(
-    name = "aof",
-    srcs = ["aof.c"],
-    deps = [":server"],
-)
-
-cc_library(
-    name = "bio",
-    srcs = ["bio.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-cc_library(
-    name = "bitops",
-    srcs = ["bitops.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-cc_library(
-    name = "blocked",
-    srcs = ["blocked.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "call_reply",
-    srcs = ["call_reply.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-cc_library(
-    name = "child_info",
-    srcs = ["childinfo.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "cli_common",
-    srcs = ["cli_common.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-cc_library(
-    name = "cluster",
-    srcs = ["cluster.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "commands",
-    srcs = ["commands.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "connection",
-    srcs = ["connection.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "crc",
-    srcs = ["crc16.c", "crc64.c", "crcspeed.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "db",
-    srcs = ["db.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "debug",
-    srcs = ["debug.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "defrag",
-    srcs = ["defrag.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "dict",
-    srcs = ["dict.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "endiancov",
-    srcs = ["endianconv.c"],
-    deps = [":hdrs", "//deps:third_party"],
-)
-
-
-cc_library(
-    name = "endiancov",
-    srcs = ["endianconv.c"],
-    deps = [":hdrs", "//deps:third_party"],
+    name = "hdrs",
+    hdrs = HDRS,
+    defines = DEFINES,
+    textual_hdrs = TEXTUAL_HDRS,
+    visibility = ["//visibility:public"],
 )

@@ -1,0 +1,7 @@
+cc_library(
+    name = "linenoise",
+    srcs = ["linenoise.h"],
+    hdrs = ["linenoise.c"],
+    includes = ["."],
+    visibility = ["//visibility:public"],
+)
