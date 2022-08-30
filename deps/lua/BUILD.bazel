@@ -1,6 +1,9 @@
 cc_library(
     name = "lua",
-    srcs = glob(["src/*.c"], exclude = ["src/luac.c"]),
+    srcs = glob(
+        ["src/*.c"],
+        exclude = ["src/luac.c"],
+    ),
     hdrs = glob(["src/*.h"]),
     includes = ["src"],
     visibility = ["//visibility:public"],

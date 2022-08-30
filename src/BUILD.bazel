@@ -1,3 +1,5 @@
+load(":make_release_hdr.bzl", "make_release_hdr")
+
 TEXTUAL_HDRS = [
     "ae_epoll.c",
     "ae_evport.c",
@@ -142,7 +144,6 @@ HDRS = [
     "rdb.h",
     "redisassert.h",
     "redismodule.h",
-    "release.h",
     "resp_parser.h",
     "rio.h",
     "script.h",
@@ -181,6 +182,7 @@ cc_binary(
         "-pthread",
         "-ldl",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":hdrs",
         "//deps:third_party",
@@ -211,6 +213,7 @@ cc_library(
     defines = DEFINES + ["REDIS_TEST"],
     textual_hdrs = TEXTUAL_HDRS,
     visibility = ["//visibility:public"],
+    deps = [":release"],
 )
 
 cc_library(
@@ -219,4 +222,9 @@ cc_library(
     defines = DEFINES,
     textual_hdrs = TEXTUAL_HDRS,
     visibility = ["//visibility:public"],
+    deps = [":release"],
+)
+
+make_release_hdr(
+    name = "release",
 )
